@@ -3,24 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <title>Video Call App</title>
-    <style>
-      video {
-        width: 45%;
-        margin: 10px;
-        border: 2px solid black;
-      }
-      button {
-        padding: 10px;
-        margin: 10px;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h2>WebRTC Video Call</h2>
-    <video id="localVideo" autoplay muted></video>
-    <video id="remoteVideo" autoplay></video>
-    <br />
-    <button onclick="startCall()">Start Call</button>
+    <div class="container">
+      <h1>📞 WebRTC Video Call</h1>
+      <div class="videos">
+        <video id="localVideo" autoplay muted></video>
+        <video id="remoteVideo" autoplay></video>
+      </div>
+      <div class="controls">
+        <button id="startCallBtn">Start Call</button>
+        <button id="endCallBtn" class="danger">End Call</button>
+      </div>
+    </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
   </body>

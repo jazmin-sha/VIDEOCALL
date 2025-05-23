@@ -7,6 +7,11 @@ const config = {
 
 const localVideo = document.getElementById("localVideo");
 const remoteVideo = document.getElementById("remoteVideo");
+const startCallBtn = document.getElementById("startCallBtn");
+const endCallBtn = document.getElementById("endCallBtn");
+
+startCallBtn.onclick = startCall;
+endCallBtn.onclick = endCall;
 
 async function startCall() {
   localStream = await navigator.mediaDevices.getUserMedia({
@@ -16,6 +21,7 @@ async function startCall() {
   localVideo.srcObject = localStream;
 
   peer = new RTCPeerConnection(config);
+
   localStream.getTracks().forEach((track) => peer.addTrack(track, localStream));
 
   peer.onicecandidate = ({ candidate }) => {
@@ -29,6 +35,20 @@ async function startCall() {
   const offer = await peer.createOffer();
   await peer.setLocalDescription(offer);
   socket.emit("offer", offer);
+}
+
+function endCall() {
+  if (peer) {
+    peer.close();
+    peer = null;
+  }
+  if (localStream) {
+    localStream.getTracks().forEach((track) => track.stop());
+    localStream = null;
+  }
+  localVideo.srcObject = null;
+  remoteVideo.srcObject = null;
+  alert("Call Ended");
 }
 
 socket.on("offer", async (offer) => {
@@ -64,5 +84,7 @@ socket.on("answer", async (answer) => {
 });
 
 socket.on("candidate", (candidate) => {
-  peer.addIceCandidate(new RTCIceCandidate(candidate));
+  if (peer) {
+    peer.addIceCandidate(new RTCIceCandidate(candidate));
+  }
 });
